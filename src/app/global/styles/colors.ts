@@ -6,12 +6,12 @@ const colors = {
   danger: '#dc3545',
   warning: '#ffc107',
   info: '#0dcaf0',
-  light: '#f8f9fa',
+  light: '#ccc',
   dark: '#212529',
   white: '#fff',
 }
 
-export const buttonCOlors = {
+export const buttonColors = {
   // [버튼 배경색, 글자색]
   primary: [colors.primary, colors.white],
   secondary: [colors.secondary, colors.white],

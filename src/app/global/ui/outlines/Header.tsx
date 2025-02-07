@@ -4,17 +4,23 @@ import React from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { styled } from 'styled-components'
-import { RiLoginBoxLine } from 'react-icons/ri'
-import { FaUserPlus, FaHome, FaSearch } from 'react-icons/fa'
+import { RiLoginBoxLine, RiLogoutBoxLine } from 'react-icons/ri'
+import { FaUserPlus, FaHome } from 'react-icons/fa'
+import classNames from 'classnames'
 import colors from '../../styles/colors'
 import sizes from '../../styles/sizes'
-import logo from '../../assets/images/logo.jpg'
+import logo from '../../assets/images/logo2.png'
+import useUser from '../../hooks/useUser'
 
-const { white, primary, light, dark } = colors
-const { medium, big } = sizes
+const { light } = colors
+const { big } = sizes
 
 // scss 문법
 const StyledHeader = styled.header`
+  &.line {
+    border-bottom: 1px solid ${light};
+  }
+
   .site-top {
     background: ${light};
     height: 45px;
@@ -49,55 +55,14 @@ const StyledHeader = styled.header`
   }
 `
 
-const StyledForm = styled.form`
-  width: 350px;
-  display: flex;
-  border: 3px solid ${dark};
-
-  button {
-    width: 45px;
-    background: ${dark};
-    color: ${white};
-    border: 0;
-    cursor: pointer;
-
-    svg {
-      font-size: ${big};
-    }
-  }
-
-  input {
-    flex-grow: 1;
-    border: 0;
-    padding: 10px;
-    font-size: ${medium};
-  }
-`
-
-const StyledMenu = styled.nav`
-  background: ${primary};
-
-  .layout-width {
-    display: flex;
-    height: 50px;
-
-    a {
-      color: ${light};
-      font-size: ${medium};
-      padding: 0 40px;
-      line-height: 50px;
-
-      &:hover,
-      &.on {
-        background: ${dark};
-      }
-    }
-  }
-`
-
 const Header = () => {
+  const { userInfo, isLogin, isAdmin } = useUser()
+
+  const email = userInfo?.email
+  const name = userInfo?.name
+
   return (
-    <StyledHeader>
+    <StyledHeader className={classNames({ line: isAdmin })}>
       <div className="site-top">
         <div className="layout-width">
           {/* 컨텐츠 영역 */}
@@ -107,12 +72,24 @@ const Header = () => {
             </Link>
           </div>
           <div className="right">
-            <a href="/member/join">
-              <FaUserPlus /> 회원 가입
-            </a>
-            <a href="/member/login">
-              <RiLoginBoxLine /> 로그인
-            </a>
+            {isLogin ? (
+              <>
+                {name}({email})님 /
+                <a href="/member/api/logout">
+                  <RiLogoutBoxLine />
+                  로그아웃
+                </a>
+              </>
+            ) : (
+              <>
+                <a href="/member/join">
+                  <FaUserPlus /> 회원가입
+                </a>
+                <a href="/member/login">
+                  <RiLoginBoxLine /> 로그인
+                </a>
+              </>
+            )}
           </div>
         </div>
       </div>
@@ -121,29 +98,10 @@ const Header = () => {
         <div className="layout-width">
           {/* 컨텐츠 영역 */}
           <Link href="/" className="logo">
-            <Image src={logo} alt="로고" priority={true} height={100} />
+            <Image src={logo} alt="로고" priority={true} height={220} />
           </Link>
-
-          <StyledForm method="GET" action="/board/search" autoComplete="off">
-            <input
-              type="text"
-              name="skey"
-              placeholder="검색어를 입력하세요"
-            ></input>
-            <button type="submit">
-              <FaSearch />
-            </button>
-          </StyledForm>
         </div>
       </div>
-      {/* logo-search */}
-      <StyledMenu>
-        <div className="layout-width">
-          <a href="#">메뉴1</a>
-          <a href="#">메뉴2</a>
-          <a href="#">메뉴3</a>
-        </div>
-      </StyledMenu>
     </StyledHeader>
   )
 }

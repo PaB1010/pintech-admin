@@ -1,8 +1,10 @@
 import StyledComponentsRegistry from './registry'
 import Header from './global/ui/outlines/Header'
-import Footer from './global/ui/outlines/Footer'
+// import Footer from './global/ui/outlines/Footer'
 import { CommonProvider } from './global/contexts/CommonContext'
 import { Metadata } from 'next'
+import { getUserInfo } from './member/services/actions'
+import { UserProvider } from './global/contexts/UserContext'
 
 // import { styled } from 'styled-components'
 import 'react-datepicker/dist/react-datepicker.css'
@@ -13,24 +15,30 @@ import './globals.css'
 // `
 
 export const metadata: Metadata = {
-  title: 'Pintech Project',
-  description: '카드 & 대출 추천 사이트',
+  title: 'ADMIN - Pintech Project',
+  description: 'ADMIN - 카드 & 대출 추천 사이트',
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const userInfo = await getUserInfo()
+
   return (
     <html lang="ko">
       <body>
         <StyledComponentsRegistry>
-          <CommonProvider>
+          <UserProvider _userInfo={userInfo}>
             <Header />
-            <main className="main-content">{children}</main>
-            <Footer />
-          </CommonProvider>
+            <main className="main-content">
+              <CommonProvider>
+                <section>{children}</section>
+                {/* <Footer /> */}
+              </CommonProvider>
+            </main>
+          </UserProvider>
         </StyledComponentsRegistry>
       </body>
     </html>
